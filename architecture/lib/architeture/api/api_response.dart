@@ -10,7 +10,11 @@ class ApiResponse<T> {
     ok = true;
   }
 
-  ApiResponse.addResponse(this.entidades) {
+  ApiResponse.addResponses(this.entidades) {
+    ok = true;
+  }
+
+  ApiResponse.addResponse(this.result) {
     ok = true;
   }
 

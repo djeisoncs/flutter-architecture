@@ -1,17 +1,15 @@
 import 'dart:convert' as convert;
 
-abstract class Entity {
-  int id;
+import 'package:equatable/equatable.dart';
 
-  Entity({this.id});
+// ignore: must_be_immutable
+abstract class Entity extends Equatable {
 
   Map<String, dynamic> toMap();
 
-  fromMap(Map<String, dynamic> json);
+  Entity clonar();
 
-  String toJson() {
-    String json = convert.json.encode(toMap());
-    return json;
-  }
+  String toJson() => convert.json.encode(toMap());
 
+  String getId();
 }
