@@ -1,14 +1,16 @@
 
 import 'dart:convert';
 
+import 'package:architecture/architeture/api/api.dart';
 import 'package:architecture/architeture/api/api_response.dart';
 import 'package:architecture/architeture/auth/api/auth_api.dart';
 import 'package:architecture/architeture/auth/entity/usuario.dart';
+import 'package:architecture/architeture/entity/entity.dart';
 import 'package:architecture/architeture/provider/base_provider.dart';
 
 class AuthProvider extends BaseProvider<Usuario> {
 
-  AuthApi _authApi = new AuthApi();
+  AuthApi _authApi = AuthApi();
 
   Future<ApiResponse> logar(String login, String senha) async {
     ApiResponse apiResponse;
@@ -37,5 +39,10 @@ class AuthProvider extends BaseProvider<Usuario> {
     }
 
     return apiResponse;
+  }
+
+  @override
+  Api<Entity> getApi() {
+    return _authApi;
   }
 }

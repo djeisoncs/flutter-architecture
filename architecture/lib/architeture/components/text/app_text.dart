@@ -28,7 +28,7 @@ class AppText extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
-      style: TextStyle(fontSize: 25, color: Colors.blue),
+      style: TextStyle(fontSize: 15, color: Colors.black),
       obscureText: passoword,
       validator: validator,
       keyboardType: keyboardType,
