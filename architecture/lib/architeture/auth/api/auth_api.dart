@@ -9,10 +9,11 @@ import 'package:http/http.dart' as http;
 
 class AuthApi extends Api<Usuario> {
 
+  bool _utilizaPahEndPoint = true;
   @override
-  String getPathEndPoint() {
-    return ApiPath.AUTH;
-  }
+  String getPathEndPoint() => _utilizaPahEndPoint ? ApiPath.AUTH : "";
+
+  String getBasePathEndPoint() => ApiPath.API_BASE_URL_FIREBASE;
 
   @override
   Usuario fromJson(Map<String, dynamic> map) {
@@ -32,5 +33,26 @@ class AuthApi extends Api<Usuario> {
       };
 
       return await post(headers: headers, queryParams: queryParams);
+  }
+
+  Future<void> signup(String email, String password) async {
+    _utilizaPahEndPoint = false;
+    Map<String, String> headers = {
+      "Content-Type": "application/json"
+    };
+
+    String jsonEnv = json.encode({
+      "email": email,
+      "displayName": "Djeison",
+      "photoURL": "https://s3-sa-east-1.amazonaws.com/livetouch-temp/livrows/foto.png",
+      "password": password,
+      "returnSecureToken": true
+    });
+
+    final response = await post(body: jsonEnv, headers: headers);
+
+    print("Response ${json.decode(response.body)}");
+
+    return Future.value();
   }
 }

@@ -41,6 +41,20 @@ class AuthProvider extends BaseProvider<Usuario> {
     return apiResponse;
   }
 
+  Future<ApiResponse> signup(String email, String password) async {
+    ApiResponse apiResponse;
+    try {
+      var response = await _authApi.signup(email, password);
+
+      apiResponse = ApiResponse.ok(result: true);
+    } catch(error, exception) {
+      print("Erro no login $error > $exception");
+      apiResponse = ApiResponse.error(msg: "Erro não previsto");
+    }
+
+    return apiResponse;
+  }
+
   @override
   Api<Entity> getApi() {
     return _authApi;

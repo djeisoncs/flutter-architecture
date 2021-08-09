@@ -13,28 +13,30 @@ abstract class BaseApi<T> {
         util.isNotNull(queryParams)) {
 
       url =
-          "${ApiPath.API_BASE_URL}/$pathEndPoint/$urlFinal?${Uri(queryParameters: queryParams).query}";
+          "${getBasePathEndPoint()}/$pathEndPoint/$urlFinal?${Uri(queryParameters: queryParams).query}";
 
     } else if (util.isNotNullAndNotEmpity(pathEndPoint) &&
         util.isNotNull(queryParams)) {
       url =
-          "${ApiPath.API_BASE_URL}/$pathEndPoint?${Uri(queryParameters: queryParams).query}";
+          "${getBasePathEndPoint()}/$pathEndPoint?${Uri(queryParameters: queryParams).query}";
 
     } else if (util.isNotNullAndNotEmpity(pathEndPoint) &&
         util.isNotNullAndNotEmpity(urlFinal)) {
 
-      url = "${ApiPath.API_BASE_URL}/$pathEndPoint/$urlFinal";
+      url = "${getBasePathEndPoint()}/$pathEndPoint/$urlFinal";
 
     } else if (util.isNotNullAndNotEmpity(pathEndPoint)) {
-      url = "${ApiPath.API_BASE_URL}/$pathEndPoint";
+      url = "${getBasePathEndPoint()}/$pathEndPoint";
 
     } else {
-      url = ApiPath.API_BASE_URL;
+      url = getBasePathEndPoint();
 
     }
 
     return Uri.parse(util.removerBarrasDuplicadas(url));
   }
+
+  String getBasePathEndPoint() => ApiPath.API_BASE_URL;
 
   String getPathEndPoint();
 

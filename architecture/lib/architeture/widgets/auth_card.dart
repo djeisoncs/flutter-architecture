@@ -1,4 +1,5 @@
 import 'package:architecture/architeture/api/api_response.dart';
+import 'package:architecture/architeture/auth/entity/usuario.dart';
 import 'package:architecture/architeture/auth/provider/auth_provider.dart';
 import 'package:architecture/architeture/components/text/app_text.dart';
 import 'package:flutter/material.dart';
@@ -14,14 +15,21 @@ class AuthCard extends StatefulWidget {
 class _AuthCardState extends State<AuthCard> {
   bool _isLoaging = false;
 
+  AuthMode _authMode = AuthMode.Login;
+
+  Usuario authUser = Usuario();
+
   final _tLogin = TextEditingController();
 
   final _tSenha = TextEditingController();
+
+  final _tConfirmarSenha = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
   final _focusSenha = FocusNode();
 
+  final _focusConfirmarSenha = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +41,7 @@ class _AuthCardState extends State<AuthCard> {
       ),
       child: Container(
         padding: EdgeInsets.all(16),
-        height: 280,
+        height: _authMode == AuthMode.Login ? 290 : 371,
         width: deviceSize.width * 0.75,
         child: _form(),
       ),
@@ -45,26 +53,26 @@ class _AuthCardState extends State<AuthCard> {
       key: _formKey,
       child: Column(
         children: <Widget>[
-          AppText(
-            "Login",
-            "Digite o login",
+          TextFormField(
+            decoration: InputDecoration(labelText: 'E-mail'),
             controller: _tLogin,
+            keyboardType: TextInputType.emailAddress,
             validator: _validateLogin,
-            textInputAction: TextInputAction.next,
-            nextFocus: _focusSenha,
+            onSaved: (value) => authUser.email = value,
           ),
-          SizedBox(
-            height: 10,
-          ),
-          AppText(
-            "Senha",
-            "Digite a senha",
-            passoword: true,
+          TextFormField(
+            decoration: InputDecoration(labelText: 'Senha'),
             controller: _tSenha,
+            obscureText: true,
             validator: _validateSenha,
-            keyboardType: TextInputType.text,
-            focusNode: _focusSenha,
+            onSaved: (value) => authUser.senha = value,
           ),
+          if (_authMode == AuthMode.Signup)
+            TextFormField(
+              decoration: InputDecoration(labelText: 'Confirmar Senha'),
+              obscureText: true,
+              validator: _validateConfirmacaoSenha,
+            ),
           Spacer(),
           _isLoaging
               ? CircularProgressIndicator()
@@ -80,9 +88,25 @@ class _AuthCardState extends State<AuthCard> {
                     padding:
                         EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
                   ),
-                  child: Text("Login"),
+                  child: Text(
+                    _authMode == AuthMode.Login ? "Entrar" : "Registrar",
+                  ),
                   onPressed: _onClickLogin,
                 ),
+          Container(
+            height: 46,
+            margin: EdgeInsets.only(top: 20),
+            child: InkWell(
+              onTap: _swichAuthMode,
+              child: Text(
+                _authMode == AuthMode.Login ? "Registrar" : "Login",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    decoration: TextDecoration.underline),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -96,25 +120,42 @@ class _AuthCardState extends State<AuthCard> {
       _isLoaging = true;
     });
 
-    String login = _tLogin.text;
+    String email = _tLogin.text;
     String senha = _tSenha.text;
-
-
     AuthProvider _provider = Provider.of(context, listen: false);
 
-    ApiResponse response = await _provider.logar(login, senha);
+    if (_authMode == AuthMode.Login) {
 
-    print("Response >>>> $response");
 
-    // _onLogar(await _bloc.login(login, senha));
+      ApiResponse response = await _provider.logar(email, senha);
+
+      print("Response >>>> $response");
+
+      // _onLogar(await _bloc.login(login, senha));
+    } else {
+      await _provider.signup(email, senha);
+    }
+
     setState(() {
       _isLoaging = false;
     });
   }
 
+  void _swichAuthMode() {
+    if (_authMode == AuthMode.Login) {
+      setState(() {
+        _authMode = AuthMode.Signup;
+      });
+    } else {
+      setState(() {
+        _authMode = AuthMode.Login;
+      });
+    }
+  }
+
   String _validateLogin(String value) {
-    if (value.isEmpty) {
-      return "O digite o login";
+    if (value.isEmpty || !value.contains("@")) {
+      return "Informe um e-mail válido";
     }
     return null;
   }
@@ -122,6 +163,13 @@ class _AuthCardState extends State<AuthCard> {
   String _validateSenha(String value) {
     if (value.isEmpty) {
       return "O digite a senha";
+    }
+    return null;
+  }
+
+  String _validateConfirmacaoSenha(String value) {
+    if (_authMode == AuthMode.Signup && value != _tSenha.text) {
+      return "As senhas são diferentes!!";
     }
     return null;
   }

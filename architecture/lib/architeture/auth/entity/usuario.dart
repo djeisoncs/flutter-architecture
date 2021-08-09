@@ -11,9 +11,10 @@ class Usuario extends Entity {
   String email;
   String token;
   String urlFoto;
+  String senha;
 
   Usuario(
-      {this.id, this.login, this.nome, this.email, this.urlFoto, this.token});
+      {this.id, this.login, this.nome, this.email, this.urlFoto, this.token, this.senha});
 
   @override
   Map<String, dynamic> toMap() {

@@ -13,16 +13,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => new AuthProvider(),),
+        ChangeNotifierProvider(
+          create: (_) => new AuthProvider(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Teste',
         theme: ThemeData(
-          primaryColor: Cores.RED,
-          // primarySwatch: Colors.red,
-          // accentColor: Colors.deepOrange,
-          // fontFamily: 'Lato',
+          primarySwatch: Colors.red,
+          accentColor: Colors.deepOrange,
+          fontFamily: 'Lato',
         ),
         routes: {
           AppRoutes.AUTH: (context) => AuthScreen(),
