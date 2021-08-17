@@ -11,7 +11,7 @@ abstract class Api<T extends Entity> extends BaseApi {
   T fromJson(Map<String, dynamic> map);
 
   Future<ApiResponse<T>> list(Paginator paginator) async {
-    var response = await post(url: "/list", body: paginator);
+    var response = await post(url: "///list", body: paginator);
 
     return ApiResponse<T>.addResponses(convert.json
         .decode(response.body)
